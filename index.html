@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -732,15 +732,18 @@ function setLang(next) {
   document.documentElement.lang = lang;
   document.title = UI[lang].title;
   renderReels();
-  try { localStorage.setItem("lang", lang); } catch {}
 }
 
-document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+// Only a click on the toggle is remembered, so the default stays Vietnamese for everyone else.
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
+  setLang(b.dataset.lang);
+  try { localStorage.setItem("langChoice", lang); } catch {}
+}));
 
-// ?lang=vi in the link wins, then the visitor's last choice, then English.
+// ?lang=en in the link wins, then the visitor's own choice, then Vietnamese.
 let saved = null;
-try { saved = localStorage.getItem("lang"); } catch {}
-setLang(new URLSearchParams(location.search).get("lang") || saved || "en");
+try { saved = localStorage.getItem("langChoice"); } catch {}
+setLang(new URLSearchParams(location.search).get("lang") || saved || "vi");
 
 // Swap a thumbnail for the real player on click.
 document.addEventListener("click", e => {
